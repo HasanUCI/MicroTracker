@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MacroTracker</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ── Header ──────────────────────────────────────────────── -->
+    <header class="app-header">
+      <span class="app-logo">🥦</span>
+      <h1 class="app-title">MacroTracker</h1>
+    </header>
+
+    <!-- ── Tab Navigation ──────────────────────────────────────── -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="today">
+        <svg viewBox="0 0 24 24"><path d="M3 9h18M7 3v2m10-2v2M3 5h18a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Today</span>
+      </button>
+      <button class="tab-btn" data-tab="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke="currentColor" fill="none" stroke-width="2"/><path d="m21 21-4.35-4.35" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Add Food</span>
+      </button>
+      <button class="tab-btn" data-tab="goals">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" fill="none" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" fill="none" stroke-width="2"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
+        <span>Goals</span>
+      </button>
+      <button class="tab-btn" data-tab="history">
+        <svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 16l4-4 4 4 4-6" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>History</span>
+      </button>
+    </nav>
+
+    <!-- ── Main Content ─────────────────────────────────────────── -->
+    <main class="main-content">
+
+      <!-- Today View -->
+      <section id="today-view" class="view active">
+        <div class="date-nav">
+          <button id="prev-day" class="date-arrow" title="Previous day">&#8249;</button>
+          <span id="current-date-label" class="date-label"></span>
+          <button id="next-day" class="date-arrow" title="Next day">&#8250;</button>
+        </div>
+        <div id="macro-summary"></div>
+        <div id="food-log"></div>
+      </section>
+
+      <!-- Search / Add Food View -->
+      <section id="search-view" class="view">
+        <div class="search-bar">
+          <div class="search-input-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke="currentColor" fill="none" stroke-width="2"/><path d="m21 21-4.35-4.35" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/></svg>
+            <input type="text" id="search-input" placeholder="Search foods (e.g. chicken breast)…" autocomplete="off" />
+            <button id="clear-search" class="clear-btn" title="Clear" style="display:none">✕</button>
+          </div>
+          <button id="barcode-btn" class="barcode-btn" title="Scan barcode">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5h2M3 19h2M19 5h2M19 19h2M3 10h2M3 14h2M19 10h2M19 14h2M7 3v2M17 3v2M7 19v2M17 19v2M7 7h10v10H7z"/></svg>
+          </button>
+        </div>
+        <div id="search-results"></div>
+      </section>
+
+      <!-- Goals View -->
+      <section id="goals-view" class="view">
+        <div class="goals-container">
+          <h2 class="section-title">Daily Macro Goals</h2>
+          <p class="section-subtitle">These targets guide your progress rings and remaining calculations.</p>
+          <div class="goals-form">
+            <div class="goal-field">
+              <label class="goal-label calories-label">
+                <span class="label-dot" style="background:var(--primary)"></span>
+                Calories <span class="goal-unit">(kcal)</span>
+              </label>
+              <input class="goal-input" type="number" id="goal-calories" min="0" step="50" />
+            </div>
+            <div class="goal-field">
+              <label class="goal-label">
+                <span class="label-dot" style="background:var(--protein)"></span>
+                Protein <span class="goal-unit">(g)</span>
+              </label>
+              <input class="goal-input" type="number" id="goal-protein" min="0" step="5" />
+            </div>
+            <div class="goal-field">
+              <label class="goal-label">
+                <span class="label-dot" style="background:var(--carbs)"></span>
+                Carbohydrates <span class="goal-unit">(g)</span>
+              </label>
+              <input class="goal-input" type="number" id="goal-carbs" min="0" step="5" />
+            </div>
+            <div class="goal-field">
+              <label class="goal-label">
+                <span class="label-dot" style="background:var(--fat)"></span>
+                Fat <span class="goal-unit">(g)</span>
+              </label>
+              <input class="goal-input" type="number" id="goal-fat" min="0" step="5" />
+            </div>
+            <div class="goal-field">
+              <label class="goal-label">
+                <span class="label-dot" style="background:var(--fiber)"></span>
+                Fiber <span class="goal-unit">(g)</span>
+              </label>
+              <input class="goal-input" type="number" id="goal-fiber" min="0" step="1" />
+            </div>
+            <button id="save-goals-btn" class="btn-primary full-width">Save Goals</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- History View -->
+      <section id="history-view" class="view">
+        <div class="history-container">
+          <h2 class="section-title">History</h2>
+          <div id="history-list"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ── Add Food Modal ──────────────────────────────────────── -->
+  <div id="add-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-overlay"></div>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h3 id="modal-food-name" class="modal-title"></h3>
+          <p id="modal-food-brand" class="modal-subtitle"></p>
+        </div>
+        <button class="modal-close" data-modal="add-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-macros" class="macro-chips"></div>
+        <div class="modal-fields">
+          <div class="modal-field">
+            <label class="field-label">Servings</label>
+            <div class="field-row">
+              <input type="number" id="modal-servings" value="1" min="0.1" step="0.1" class="field-input" />
+              <span id="modal-serving-info" class="field-unit"></span>
+            </div>
+          </div>
+          <div class="modal-field">
+            <label class="field-label">Meal</label>
+            <select id="modal-meal" class="field-select">
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snack" selected>Snack</option>
+            </select>
+          </div>
+        </div>
+        <button id="modal-add-btn" class="btn-primary full-width">Add to Log</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Barcode Scanner Modal ───────────────────────────────── -->
+  <div id="scanner-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-overlay"></div>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h3 class="modal-title">Scan Barcode</h3>
+        <button class="modal-close" data-modal="scanner-modal" id="scanner-close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="reader" class="scanner-reader"></div>
+        <p class="scanner-hint">Point camera at product barcode</p>
+        <div id="scanner-status" class="scanner-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast Container ─────────────────────────────────────── -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
