@@ -56,3 +56,4 @@ MacroTracker/
     ├── style.css    # All styles
     └── app.js       # All frontend logic
 ```
+# MicroTracker
