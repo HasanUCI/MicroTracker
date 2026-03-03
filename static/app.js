@@ -474,6 +474,27 @@ function viewDay(dateStr) {
   switchTab('today');
 }
 
+// ── Swipe Gesture ─────────────────────────────────────────────────────────
+function addSwipeListener(el, onSwipeLeft, onSwipeRight) {
+  let startX = 0, startY = 0, tracking = false;
+  el.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    tracking = true;
+  }, { passive: true });
+  el.addEventListener('touchend', e => {
+    if (!tracking) return;
+    tracking = false;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0) onSwipeLeft();
+      else onSwipeRight();
+    }
+  }, { passive: true });
+  el.addEventListener('touchcancel', () => { tracking = false; }, { passive: true });
+}
+
 // ── Tab Switching ─────────────────────────────────────────────────────────
 function switchTab(tabName) {
   document.querySelectorAll('.tab-btn').forEach(btn =>
@@ -564,6 +585,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Goals save
   document.getElementById('save-goals-btn').addEventListener('click', saveGoals);
+
+  // Swipe left/right on today view for date navigation
+  addSwipeListener(
+    document.getElementById('today-view'),
+    () => {
+      if (state.currentDate < todayStr()) {
+        state.currentDate = addDays(state.currentDate, 1);
+        loadDay(state.currentDate);
+      }
+    },
+    () => {
+      state.currentDate = addDays(state.currentDate, -1);
+      loadDay(state.currentDate);
+    },
+  );
 
   // Initial load
   loadDay(state.currentDate);
