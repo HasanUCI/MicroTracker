@@ -57,3 +57,4 @@ MacroTracker/
     └── app.js       # All frontend logic
 ```
 # MicroTracker
+# MicroTracker
